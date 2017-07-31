@@ -1,0 +1,91 @@
+<template>
+	<div>
+		<div class="container">
+			<div class="projects">
+				<div class="projects__list" scroll="scroll">
+					<div class="projects__item" v-for="project in projects">	
+						<p @click.prevent="deleteProject">{{ project }}</p>
+						<a href="" class="button__delete">Удалить</a>
+					</div>
+				</div>
+				<div class="projects__new">
+					<a href="" class="button">Добавить проект</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+
+<script>
+	
+export default {
+	data() {
+		return {
+			projects: []
+		}
+	},
+	methods: {
+		deleteProject(event) {
+			let current = event.currentTarget.innerHTML;
+			this.$http.delete('delete', {project: JSON.stringify(current)}, {
+			 	headers: { 
+					'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
+				}
+			}).then(
+			 	response => {
+			 		console.log(response.body); 
+			 	},
+			 	err => {
+			 		console.log(err)
+			 	}
+			) 
+		}
+	},
+	mounted() {
+		this.$http.get('projects', {
+		 	headers: { 
+				'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
+			}
+		}).then(
+		 	response => {
+		 		this.projects = response.body 
+		 	},
+		 	err => {
+		 		console.log(err)
+		 	}
+		) 
+	}
+}
+
+</script>
+
+<style lang="scss" scoped>
+	.container * {
+		outline: 1px solid red;
+	}
+	.projects {
+		background: cyan;
+		height: 100vh;
+		display: flex;
+		&__list {
+			flex-basis: 50%;
+			padding: 60px;
+			overflow: auto;
+		}
+		&__item {
+			background: #fff;
+			padding: 20px;
+			margin-bottom: 40px;
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+		&__new {
+			flex-basis: 50%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+	}
+</style>
