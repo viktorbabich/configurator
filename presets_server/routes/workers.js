@@ -4,36 +4,36 @@ const projectsDir = path.join(__dirname, '../public/downloads');
 const _ = require('lodash');
 const async = require('async');
 
-let arr = [];
 
 function initProjects() {
+	let arr = [];
 	let regex = /[^\D]+[^.]/;
 	let ids = fs.readdirSync(projectsDir);
-
 	_.each(ids, n => { 
 		let str = regex.exec(n);
 		arr.push(str[0]);
 	});
+	return arr;
 }
 
 function getRandomId () {
 	return Math.random(16).toString().slice(2)
 } 
 
-initProjects();
-
 module.exports =  {
 	getProjects (req, res, next) {
-		res.json(arr);
+		data = initProjects();
+		res.json(data);
 	},
 	newProject (req, res, next) {
 		res.json({id: getRandomId()})
 	},
 	deleteProject (req, res, next) {
 		let filename = JSON.parse(req.body.project);
-		// res.send(filename)
-		fs.unlink("config_" + filename + ".less");
-		// fs.unlink(filename);
+		fs.unlink(`${projectsDir}\\config_${filename}.less`, function (err) {
+	    if (err) throw err;
+	    res.send('file deleted')
+		});
 	},
 	saveConfig (req, res, next) {
 		if(req.body.d) {

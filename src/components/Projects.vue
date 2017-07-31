@@ -4,12 +4,12 @@
 			<div class="projects">
 				<div class="projects__list" scroll="scroll">
 					<div class="projects__item" v-for="project in projects">	
-						<p @click.prevent="deleteProject">{{ project }}</p>
-						<a href="" class="button__delete">Удалить</a>
+						<p class="project__name">{{ project }}</p>
+						<a href="" class="button__delete" @click.prevent="deleteProject($event)">x</a>
 					</div>
 				</div>
-				<div class="projects__new">
-					<a href="" class="button">Добавить проект</a>
+				<div class="projects__new"> 
+					<router-link to="/Font">Новый проект</router-link>
 				</div>
 			</div>
 		</div>
@@ -26,15 +26,29 @@ export default {
 		}
 	},
 	methods: {
-		deleteProject(event) {
-			let current = event.currentTarget.innerHTML;
-			this.$http.delete('delete', {project: JSON.stringify(current)}, {
+		getProjects() {
+			this.$http.get('projects', {
 			 	headers: { 
 					'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
 				}
 			}).then(
 			 	response => {
-			 		console.log(response.body); 
+			 		this.projects = response.body 
+			 	},
+			 	err => {
+			 		console.log(err)
+			 	}
+			) 
+		},
+		deleteProject(event) {
+			let current = event.target.parentElement.getElementsByClassName("project__name")[0].innerHTML;
+			this.$http.post('delete', {project: JSON.stringify(current)}, {
+			 	headers: { 
+					'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
+				}
+			}).then(
+			 	response => {
+			 		this.getProjects(); 
 			 	},
 			 	err => {
 			 		console.log(err)
@@ -43,18 +57,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.$http.get('projects', {
-		 	headers: { 
-				'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
-			}
-		}).then(
-		 	response => {
-		 		this.projects = response.body 
-		 	},
-		 	err => {
-		 		console.log(err)
-		 	}
-		) 
+		this.getProjects();
 	}
 }
 
@@ -62,7 +65,7 @@ export default {
 
 <style lang="scss" scoped>
 	.container * {
-		outline: 1px solid red;
+		// outline: 1px solid red;
 	}
 	.projects {
 		background: cyan;
@@ -77,6 +80,7 @@ export default {
 			background: #fff;
 			padding: 20px;
 			margin-bottom: 40px;
+			position: relative;
 			&:last-child {
 				margin-bottom: 0;
 			}
@@ -87,5 +91,12 @@ export default {
 			justify-content: center;
 			align-items: center;
 		}
+	}
+	.button__delete {
+		position: absolute;
+			right: 10px;
+			top: 10px;
+		text-decoration: none;
+		color: #000;
 	}
 </style>
