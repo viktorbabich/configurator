@@ -11,16 +11,20 @@ var VueResource = require('vue-resource');
 var index = require('./routes/index');
 var users = require('./routes/users');
 const api = require('./routes/api');
+var common = require('./common');
 
 var app = express();
 
-app.use(function(req, res, next) {
+/*app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://127.0.0.1:3000");
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Methods", "POST,GET,OPTIONS,PUT,DELETE, HEAD");
   res.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
   next();
-});
+});*/
+
+common.CORSMiddleware(app);
+common.addExpressMiddleware(app);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

@@ -4,7 +4,6 @@ const projectsDir = path.join(__dirname, '../public/downloads');
 const _ = require('lodash');
 const async = require('async');
 
-
 function initProjects() {
 	let arr = [];
 	let regex = /[^\D]+[^.]/;
@@ -21,11 +20,16 @@ function getRandomId () {
 } 
 
 module.exports =  {
+
 	getProjects (req, res, next) {
 		data = initProjects();
 		res.json(data);
 	},
 	newProject (req, res, next) {
+		const preoject = new Project();
+		preoject.save(err => {
+			res.json(preoject)
+		})
 		res.json({id: getRandomId()})
 	},
 	deleteProject (req, res, next) {
