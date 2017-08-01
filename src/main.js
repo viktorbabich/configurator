@@ -8,19 +8,16 @@ import Resource from 'vue-resource'
 Vue.use(Resource);
 
 Vue.config.productionTip = false
-Vue.http.options.root = 'http://127.0.0.1:3251/api';
+Vue.http.options.root = 'http://localhost:3251/api';
+Vue.http.options.xhr = {withCredentials: true};
 Vue.http.options.emulateJSON = true;
 Vue.http.headers.common["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
-
 /* eslint-disable no-new */
 new Vue({
 	mode: 'history',
   el: '#app',
   router,
   template: '<App/>',
-  http:{
-  	root: '127.0.0.1:3251'
-  },
   components: { App }
 })
 
