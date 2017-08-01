@@ -21,27 +21,42 @@ function getRandomId () {
 } 
 
 module.exports =  {
-
+	getProjectByID(req, res, next) {
+		Project
+			.findOne({_id: req.query._id})
+			.populate('user', 'owner')
+			.lean()
+			.exec((error, project) => {
+				if(error) {}
+				res.json(project)
+			})
+	},
 	getProjects (req, res, next) {
 		data = initProjects();
 		res.json(data);
 	},
 	newProject (req, res, next) {
-		console.log("req.query: ", req.query, req.body);
-		const project = new Project({name: req.query.name});
-		project.save(error => {
+		const project = new Project({name: req.query.name, owner: req.user._id});
+		project.save((error, saved) => {
+
 			if(error) {
 				res.json({error})
 			} else {
-				res.json(project)
+
+				Project
+					.findOne({_id: saved._id})
+					.populate('owner')
+					.lean()
+					.exec((err, doc) => {
+						res.json(doc)
+					})
 			}
 		})
 	},
 	deleteProject (req, res, next) {
-		let filename = JSON.parse(req.body.project);
-		fs.unlink(`${projectsDir}\\config_${filename}.less`, function (err) {
-	    if (err) throw err;
-	    res.send('file deleted')
+		Project.remove({_id: req.query._id}).exec((error) => {
+			if(error) { res.json({ error: error }) }
+			else { res.json({status: 'ok'}); }
 		});
 	},
 	saveConfig (req, res, next) {
@@ -59,5 +74,4 @@ module.exports =  {
 			res.json({err: 'no-config'})
 		}		
 	}
-
 };

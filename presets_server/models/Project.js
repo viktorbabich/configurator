@@ -22,7 +22,6 @@ const schema = new Schema({
   },
 });
 
-
 schema.pre('save', function(next) {
 	if(this.update !== this.created ) {
 		this.update = Date.now();

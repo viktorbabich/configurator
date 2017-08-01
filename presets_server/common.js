@@ -45,9 +45,14 @@ passport.use(new GoogleStrategy({
     callbackURL: `http://localhost:${config.port}${config.oAuth.returnURL}`
   },
   function(token, tokenSecret, profile, done) {
-        console.log(profile, profile.emails);
-        //return done(null, null);
-      User.findOrCreate({ googleID: profile.id, email: profile.emails[0].value }, function (err, user) {
+      const obj = {
+        googleID: profile.id,
+        email: profile.emails[0].value,
+        avatar: profile.photos[0] ? profile.photos[0].value : null,
+        name: profile.displayName ? profile.displayName : profile.emails[0].value
+      }
+
+      User.findOrCreate(obj, function (err, user) {
         return done(err, user);
       })
   }

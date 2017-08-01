@@ -9,6 +9,13 @@ const schema = new Schema({
 	googleID: {
 		type: String
 	},
+	email: {
+		type: String
+	},
+  avatar: {
+    type: String,
+    default: '/uploads/defaultuser.jpg'
+  },
 	created: {
 	  type: Date,
 	  default: Date.now
@@ -29,6 +36,7 @@ schema.statics.findOrCreate = function (userObj, callback) {
 	  	  done(null, user);
 	  	} else {
 	  		const newUser =  new User(userObj);
+
 	  		newUser.save( err => {
 	  			console.log("err: ", err);
 	  			done(null, newUser);
