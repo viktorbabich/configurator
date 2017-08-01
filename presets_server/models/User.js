@@ -9,10 +9,6 @@ const schema = new Schema({
 	googleID: {
 		type: String
 	},
-  avatar: {
-    type: String,
-    default: '/uploads/defaultuser.jpg'
-  },
 	created: {
 	  type: Date,
 	  default: Date.now

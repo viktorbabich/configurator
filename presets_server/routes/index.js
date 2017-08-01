@@ -40,7 +40,7 @@ router.get('/account', ensureAuthenticated, function(req, res){
 router.get('/auth/google', passport.authenticate('google', { scope: ['openid', 'email'] }));
 
 router.get('/auth/google/return', 
-  passport.authenticate('google', { failureRedirect: 'http://localhost:3251/login' }),
+  passport.authenticate('google', { failureRedirect: 'http://localhost:3251/login', successRedirect: 'http://localhost:3251/login' }),
   (req, res) => res.redirect('/')
 );
 

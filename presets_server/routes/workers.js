@@ -3,6 +3,7 @@ const path = require('path');
 const projectsDir = path.join(__dirname, '../public/downloads'); 
 const _ = require('lodash');
 const async = require('async');
+const Project = require('../models/Project').Project
 
 function initProjects() {
 	let arr = [];
@@ -26,11 +27,15 @@ module.exports =  {
 		res.json(data);
 	},
 	newProject (req, res, next) {
-		const preoject = new Project();
-		preoject.save(err => {
-			res.json(preoject)
+		console.log("req.query: ", req.query, req.body);
+		const project = new Project({name: req.query.name});
+		project.save(error => {
+			if(error) {
+				res.json({error})
+			} else {
+				res.json(project)
+			}
 		})
-		res.json({id: getRandomId()})
 	},
 	deleteProject (req, res, next) {
 		let filename = JSON.parse(req.body.project);
